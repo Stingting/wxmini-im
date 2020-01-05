@@ -27,6 +27,7 @@
 .open_emoji,
 .send_image,
 .open_camera,
+.send_video,
 .v-record {
 	width: 48rpx;
 	height: 48rpx;
@@ -44,7 +45,7 @@
 .v-record{
 	margin-left: 48rpx;
 }
-.open_camera, .send_image{
+.open_camera, .send_image, .send_video{
 	margin-left: 64rpx;
 }
 

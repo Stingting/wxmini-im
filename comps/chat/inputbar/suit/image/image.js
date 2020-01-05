@@ -1,6 +1,5 @@
 let msgType = require("../../../msgtype");
 let disp = require("../../../../../utils/broadcast");
-import TIM from 'tim-wx-sdk';
 var tim = getApp().globalData.tim;
 Component({
 	properties: {
@@ -56,8 +55,8 @@ Component({
 				src: res.tempFilePaths[0],
 				success(r){
                     let message = tim.createImageMessage({
-                        to: 'user1',
-                        conversationType: TIM.TYPES.CONV_C2C,
+                        to: me.getSendToParam(),
+                        conversationType: msgType.chatType.SINGLE_CHAT,
                         payload: {
                             file: res
                         },
@@ -76,7 +75,7 @@ Component({
                         "newImageMsg",
                         {
                             msg: message,
-                            type: TIM.TYPES.MSG_IMAGE
+                            type: msgType.IMAGE
                         },
                         {
                             bubbles: true,

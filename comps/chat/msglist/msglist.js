@@ -83,14 +83,6 @@ Component({
 			
 
 			var historyChatMsgs = wx.getStorageSync("rendered_" + sessionKey) || [];
-			// if (curChatMsg.length) {
-			// 	console.log(curMsgMid.substring(curMsgMid.length - 10) , curChatMsg[0].mid.substring(curChatMsg[0].mid.length - 10))
-			// }
-			
-			// if(curChatMsg.length && curMsgMid.substring(curMsgMid.length - 10) == curChatMsg[curChatMsg.length - 1].mid.substring(curChatMsg[0].mid.length - 10)){
-			// 	//curChatMsg[curChatMsg.length - 1].msg.data[0].isSuc = true
-			// 	curChatMsg[curChatMsg.length - 1].isSuc = true
-			// }
 			historyChatMsgs = historyChatMsgs.concat(curChatMsg);
 
 			//console.log('当前历史',renderableMsg)
@@ -184,54 +176,6 @@ Component({
 
 		this.renderMsg(null, null, chatMsg, sessionKey);
 		wx.setStorageSync(sessionKey, null);
-		// disp.on("em.chat.sendSuccess", function(mid){
-		// 	curMsgMid = mid
-		// 	console.log('发送过去了', mid)
-		// 	let msgList = me.data.chatMsg
-		// 	msgList.map((item) =>{
-		// 		if (item.mid.substring(item.mid.length - 10) == mid.substring(mid.length - 10)) {
-
-		// 			console.log(111111, item)
-
-		// 			item.msg.data[0].isSuc = true
-		// 			item.isSuc = true
-
-		// 			me.setData({
-		// 				chatMsg: msgList
-		// 			})
-		// 		}
-		// 	})
-		// 	if (me.curChatMsg[0].mid == curMsgMid) {
-		// 		me.curChatMsg[0].msg.data[0].isShow = true
-		// 		me.curChatMsg[0].isShow = true
-		// 	}
-		// 	wx.setStorageSync("rendered_" + sessionKey, msgList);
-		// 	console.log('msgList', msgList)
-			
-		// })
-
-		disp.on('em.xmpp.error.sendMsgErr', function(err) {
-			curMsgMid = err.data.mid
-			isFail = true
-			return
-			console.log('发送失败了')
-			let msgList = me.data.chatMsg
-			msgList.map((item) =>{
-				if (item.mid.substring(item.mid.length - 10) == curMsgMid.substring(curMsgMid.length - 10)) {
-					item.msg.data[0].isFail = true
-					item.isFail = true
-
-					me.setData({
-						chatMsg: msgList
-					})
-				}
-			})
-			if (me.curChatMsg[0].mid == curMsgMid) {
-				me.curChatMsg[0].msg.data[0].isShow = false;
-				me.curChatMsg[0].isShow = false
-			}
-			wx.setStorageSync("rendered_" + sessionKey, msgList);
-		});
 
 		msgStorage.on("newChatMsg", function(renderableMsg, type, curChatMsg, sesskey){
 			me.curChatMsg = curChatMsg;

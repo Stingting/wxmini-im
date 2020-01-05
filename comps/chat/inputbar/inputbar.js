@@ -20,7 +20,7 @@ Component({
 			emoji: null,
 			image: null,
 			location: null,
-			//video: null,
+			video: null,
 		},
 	},
 	methods: {
@@ -36,9 +36,9 @@ Component({
 			);
 		},
 
-		// sendVideo(){
-		// 	this.data.__comps__.video.sendVideo();
-		// },
+		sendVideo(){
+			this.data.__comps__.video.sendVideo();
+		},
 
 		openCamera(){
 			this.data.__comps__.image.openCamera();
@@ -79,6 +79,6 @@ Component({
 		comps.emoji = this.selectComponent("#chat-suit-emoji");
 		comps.image = this.selectComponent("#chat-suit-image");
 		// comps.location = this.selectComponent("#chat-suit-location");
-		//comps.video = this.selectComponent("#chat-suit-video");
+		comps.video = this.selectComponent("#chat-suit-video");
 	},
 });

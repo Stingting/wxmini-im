@@ -1,67 +1,45 @@
-import TIM from 'tim-wx-sdk';
 let msgType = require("msgtype");
-
+import util from '../../utils/util';
 module.exports = function(sendableMsg, type, myName){
-    // TIM.TYPES.MSG_TEXT	文本消息
-    // TIM.TYPES.MSG_IMAGE	图片消息
-    // TIM.TYPES.MSG_AUDIO	音频消息
-    // TIM.TYPES.MSG_VIDEO	视频消息
-    // TIM.TYPES.MSG_FILE	文件消息
-    // ID: "C2Cuser1-1444580001-10806522-1"
-    // clientSequence: 1444580001
-    // conversationID: "C2Cuser1"
-    // conversationSubType: undefined
-    // conversationType: "C2C"
-    // flow: "out"
-    // from: "christine"
-    // geo: {}
-    // isPlaceMessage: 0
-    // isRead: true
-    // isResend: false
-    // isRevoked: false
-    // isSystemMessage: false
-    // messagePriority: 0
-    // payload: {text: "tttt"}
-    // protocol: "JSON"
-    // random: 10806522
-    // sequence: 1444580001
-    // status: "unSend"
-    // time: 1578120299
-    // to: "user1"
-    // type: "TIMTextElem"
-    var date = new Date();
-    var Hours = date.getHours();
-    var Minutes = date.getMinutes();
-    var Seconds = date.getSeconds();
-    var time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " "
-        + (Hours < 10 ? "0" + Hours : Hours) + ":" + (Minutes < 10 ? "0" + Minutes : Minutes) + ":" + (Seconds < 10 ? "0" + Seconds : Seconds);
+    var time = util.formatTime(new Date(sendableMsg.time * 1000));
+    var msg = {};
+    msg.type = type;
+    if(type == msgType.TEXT) {
+        //文本消息
+         msg.data = sendableMsg.payload.text;
+    } else if (type == msgType.IMAGE) {
+        //图片消息
+        msg.url = sendableMsg.flow == 'in' ? sendableMsg.payload.imageInfoArray[0].imageUrl:sendableMsg.payload.imageInfoArray[0].url; //图片路径
+        msg.format = sendableMsg.payload.imageFormat; //图片格式
+    } else if (type == msgType.AUDIO) {
+        //音频消息
+        msg.url = sendableMsg.payload.url;
+        msg.length = sendableMsg.payload.second; //音频时长，单位：秒
+    } else if (type == msgType.VIDEO) {
+        //视频消息
+        msg.url = sendableMsg.payload.videoUrl;//remoteVideoUrl
+        msg.thumbUrl = sendableMsg.payload.thumbUrl;//缩略图地址
+        msg.format = sendableMsg.payload.videoFormat; //视频文件格式
+    }
+    else if (type == msgType.FILE){
+        //文件消息
+         msg.data = [{data: "[当前不支持此格式消息展示]", type: msgType.FILE}];
+    }
 	var renderableMsg = {
 		info: {
 			from: sendableMsg.from,
-			to: sendableMsg.to
+			to: sendableMsg.to,
+            flow : sendableMsg.flow
 		},
 		username: sendableMsg.from == myName ? sendableMsg.to : sendableMsg.from,
 		yourname: sendableMsg.from,
-		msg: {
-			type: type,
-			data: sendableMsg,
-		},
+		msg: msg,
 		style: sendableMsg.from == myName ? "self" : "",
 		time: time,
-		mid: sendableMsg.type + sendableMsg.id,
-		chatType: sendableMsg.conversationType
+		mid: sendableMsg.type + sendableMsg.ID,
+		chatType: sendableMsg.conversationType, //会话类型，C2C,
+        status : sendableMsg.status //消息状态 ： unSend(未发送)success(发送成功)fail(发送失败)
 	};
-	if(type == msgType.IMAGE){
-		renderableMsg.msg.size = {
-			width: sendableMsg.body.body.size.width,
-			height: sendableMsg.body.body.size.height,
-		};
-	}else if (type == msgType.AUDIO) {
-		renderableMsg.msg.length = sendableMsg.body.length;
-	}else if (type == msgType.FILE){
-		renderableMsg.msg.data = [{data: "[当前不支持此格式消息展示]", type: "txt"}];
-		renderableMsg.msg.type = 'txt';
-	}
 	return renderableMsg;
 
 };

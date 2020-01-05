@@ -5,6 +5,7 @@ let RecordDesc = RECORD_CONST.RecordDesc;
 let disp = require("../../../../../utils/broadcast");
 let RunAnimation = false
 const InitHeight = [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50]
+var tim = getApp().globalData.tim;
 Component({
 	properties: {
 		username: {
@@ -130,7 +131,7 @@ Component({
 					// console.log("开始录音...");
 				});
 				recorderManager.start({
-					format: "mp3"
+					format: "mp3"  //音频格式，选择此格式创建的音频消息，可以在即时通信 IM 全平台（Android、iOS、微信小程序和Web）互通
 				});
 				// 超时
 				setTimeout(function(){
@@ -172,7 +173,7 @@ Component({
 			        })
 			    } else {
 			        // 上传
-					this.uploadRecord(res.tempFilePath, res.duration);
+					this.uploadRecord(res);
 			    }
 			});
 			// 停止录音
@@ -187,12 +188,29 @@ Component({
 			return this.isGroupChat() ? this.data.username.groupId : this.data.username.your;
 		},
 
-		uploadRecord(tempFilePath, dur){
+		uploadRecord(res){
 			var me = this;
+            console.log('recorder stop', res);
+            // 创建消息实例
+            const message = tim.createAudioMessage({
+                to: me.getSendToParam(),
+                conversationType: msgType.chatType.SINGLE_CHAT,
+                payload: {
+                    file: res
+                }
+            });
+            let promise = tim.sendMessage(message);
+            promise.then(function(imResponse) {
+                // 发送成功
+                console.log(imResponse);
+            }).catch(function(imError) {
+                // 发送失败
+                console.warn('sendMessage error:', imError);
+            });
 			me.triggerEvent(
 				"newAudioMsg",
 				{
-					msg: msg,
+					msg: message,
 					type: msgType.AUDIO,
 				},
 				{

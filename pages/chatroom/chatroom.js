@@ -3,17 +3,17 @@ let disp = require("../../utils/broadcast");
 Page({
 	data: {
 		username: {
-			your: "user1",
+			your: "",
 		},
 	},
 
 	// options = 系统传入的 url 参数
 	onLoad(options){
-		// let username = JSON.parse(options.username);
-		let username = {
+		/*let username = {
             your: "user1",
-        };
-		this.setData({ username: username });
+        };*/
+        let username = JSON.parse(options.username);
+        this.setData({ username: username });
 		wx.setNavigationBarTitle({
 			title: username.your
 		});

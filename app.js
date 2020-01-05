@@ -1,25 +1,53 @@
-//app.js
-import TIM from 'tim-wx-sdk'; // 微信小程序环境请取消本行注释，并注释掉 import TIM from 'tim-js-sdk';
-import COS from 'cos-wx-sdk-v5'; // 微信小程序环境请取消本行注释，并注释掉 import COS from 'cos-js-sdk-v5';
+import TIM from 'tim-wx-sdk';
+import COS from 'cos-wx-sdk-v5';
 import {genTestUserSig} from 'utils/GenerateTestUserSig';
+let msgStorage = require("comps/chat/msgstorage");
 App({
   onLaunch: function () {
-      let msgStorage = require("comps/chat/msgstorage");
-// 创建 SDK 实例，TIM.create() 方法对于同一个 SDKAppID 只会返回同一份实例
+
+      // 登录
+      wx.login({
+          success: res => {
+              // 发送 res.code 到后台换取 openId, sessionKey, unionId
+          }
+      })
+      // 获取用户信息
+      wx.getSetting({
+          success: res => {
+              if (res.authSetting['scope.userInfo']) {
+                  // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+                  wx.getUserInfo({
+                      success: res => {
+                          // 可以将 res 发送给后台解码出 unionId
+                          this.globalData.userInfo = res.userInfo
+
+                          // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+                          // 所以此处加入 callback 以防止这种情况
+                          if (this.userInfoReadyCallback) {
+                              this.userInfoReadyCallback(res)
+                          }
+                      }
+                  })
+              }
+          }
+      })
+
+
+        // 创建 SDK 实例，TIM.create() 方法对于同一个 SDKAppID 只会返回同一份实例
       let options = {
           SDKAppID: 1400302002 // 接入时需要将0替换为您的即时通信应用的 SDKAppID
       };
       let tim = TIM.create(options); // SDK 实例通常用 tim 表示
-// 设置 SDK 日志输出级别，详细分级请参见 setLogLevel 接口的说明
+        // 设置 SDK 日志输出级别，详细分级请参见 setLogLevel 接口的说明
       tim.setLogLevel(0); // 普通级别，日志量较多，接入时建议使用
-// tim.setLogLevel(1); // release级别，SDK 输出关键信息，生产环境时建议使用
+        // tim.setLogLevel(1); // release级别，SDK 输出关键信息，生产环境时建议使用
 
-// 将腾讯云对象存储服务 SDK （以下简称 COS SDK）注册为插件，IM SDK 发送文件、图片等消息时，需要用到腾讯云的 COS 服务
+        // 将腾讯云对象存储服务 SDK （以下简称 COS SDK）注册为插件，IM SDK 发送文件、图片等消息时，需要用到腾讯云的 COS 服务
 
-// 微信小程序环境，注册 COS SDK
+        // 微信小程序环境，注册 COS SDK
       tim.registerPlugin({'cos-wx-sdk': COS}); // 微信小程序环境请取消本行注释，并注释掉 tim.registerPlugin({'cos-js-sdk': COS});
 
-// 监听事件，如：
+        // 监听事件，如：
       tim.on(TIM.EVENT.SDK_READY, function(event) {
           // 收到离线消息和会话列表同步完毕通知，接入侧可以调用 sendMessage 等需要鉴权的接口
           console.log(`============${event.name}==================`);
@@ -79,7 +107,7 @@ App({
 
       tim.on(TIM.EVENT.SDK_NOT_READY, function(event) {
           // 收到 SDK 进入 not ready 状态通知，此时 SDK 无法正常工作
-          // event.name - TIM.EVENT.SDK_NOT_READY
+          // tim.login({userID: 'christine', userSig: genTestUserSig('christine').userSig});
       });
 
       tim.on(TIM.EVENT.KICKED_OUT, function(event) {
@@ -89,19 +117,34 @@ App({
           //    - TIM.TYPES.KICKED_OUT_MULT_ACCOUNT 多实例登录被踢
           //    - TIM.TYPES.KICKED_OUT_MULT_DEVICE 多终端登录被踢
           //    - TIM.TYPES.KICKED_OUT_USERSIG_EXPIRED 签名过期被踢
+         /* wx.showToast({
+              title: '你已被踢下线',
+              icon: 'none',
+              duration: 1500
+          })
+          setTimeout(() => {
+              wx.reLaunch({
+                  url: '../login/main'
+              })
+          }, 1500)*/
       });
 
-// 开始登录
-      tim.login({userID: 'christine', userSig: genTestUserSig('christine').userSig});
       wx.setStorageSync('myUsername', 'christine');
+
       this.globalData.tim = tim;
 
-      wx.navigateTo({
-        url: 'pages/chatroom/chatroom'
-      })
+      // 开始登录
+      tim.login({userID: 'christine', userSig: genTestUserSig('christine').userSig})
+          .then(function (imResponse) {
+              console.log("login success ======" + JSON.stringify(imResponse.data)); // 登录成功
+          }).catch(function (imError) {
+          console.warn('login error:', imError); // 登录失败的相关信息
+      });
 
   },
   globalData: {
-    tim : null
+    userinfo:null,
+    tim : null,
+    isIPX:false
   }
-})
+});

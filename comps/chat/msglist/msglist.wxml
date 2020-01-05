@@ -1,25 +1,27 @@
 <template name="TIMTextElem">
-	<text class="msg-text" style="float:left;">{{item.msg.data.payload.text}}</text>
+	<text class="msg-text" style="float:left;">{{item.msg.data}}</text>
 </template>
-<template name="emoji">
+<!--<template name="emoji">
 	<image
 		class="avatar"
 		src="{{ '../../../images/faces/' + item.data }}"
 		style="width:25px; height:25px; margin:0 0 2px 0; float:left;" />
-</template>
+</template>-->
 <template name="TIMImageElem">
 	<image
 		class="avatar"
-		src="{{ item.msg.data.payload.imageInfoArray[0].imageUrl}}"
+		src="{{ item.msg.url}}"
 		style="width:90px; height:120px; margin:2px auto;"
 		mode="aspectFit"
 		bind:tap="previewImage"
-		data-url="{{ item.msg.data.payload.imageInfoArray[0].imageUrl}}" />
+		data-url="{{item.msg.url}}" />
 </template>
-<template name="video">
-	<video src="{{ item.msg.data }}" controls autoplay />
+<template name="TIMVideoFileElem">
+	<video src="{{item.msg.url}}"
+		   style="max-height: 400rpx;max-width: 50vw;"
+		   poster="{{item.msg.thumbUrl === '' ? 'https://webim-1252463788.file.myqcloud.com/assets/images/video-poster.png' : item.msg.thumbUrl}}"></video>
 </template>
-<template name="audio">
+<template name="TIMSoundElem">
 	<audio src="{{ item.msg.url }}" controls autoplay />
 </template>
 
@@ -44,21 +46,13 @@
 			</view>
 			<image class="avatar" src="../../../images/theme@2x.png"/>
 			<view class="msg">
-				<image
-				class="err {{(item.style == 'self' && item.isFail) ? 'show' : 'hide'}}"
-				src="../../../images/msgerr.png"/>
-
+				<image class="err {{(item.style == 'self' && item.status == fail) ? 'show' : 'hide'}}" src="../../../images/msgerr.png"/>
 				<image wx:if="{{item.style == 'self'}}" src="../../../images/poprightarrow@2x.png" class="msg_poprightarrow"/>
 				<image wx:if="{{item.style == ''}}" src="../../../images/popleftarrow@2x.png" class="msg_popleftarrow"/>
-				<view wx:if="{{ item.msg.type == 'TIMImageElem' || item.msg.type == 'video' }}">
-					<template is="{{ item.msg.type}}" data="{{ item }}"/>
+				<view wx:if="{{item.msg.type == 'TIMTextElem' || item.msg.type == 'TIMImageElem' || item.msg.type == 'TIMVideoFileElem'}}">
+					<template is="{{item.msg.type}}" data="{{item}}"/>
 				</view>
-				<audio-msg
-					wx:if="{{ item.msg.type == 'audio' }}"
-					msg="{{ item }}"></audio-msg>
-				<view wx:elif="{{ item.msg.type == 'TIMTextElem' || item.msg.type == 'emoji' }}">
-						<template is="{{ item.msg.type }}" data="{{ item }}"/>
-				</view>
+				<audio-msg wx:if="{{item.msg.type == 'TIMSoundElem' }}" msg="{{ item }}"></audio-msg>
 			</view>
 		</view>
 	</view>

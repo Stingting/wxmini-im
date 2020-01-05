@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {} }; __MODS__[
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = { exports: {} }; __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); if(typeof m.exports === "object") { __MODS__[modId].m.exports.__proto__ = m.exports.__proto__; Object.keys(m.exports).forEach(function(k) { __MODS__[modId].m.exports[k] = m.exports[k]; var desp = Object.getOwnPropertyDescriptor(m.exports, k); if(desp && desp.configurable) Object.defineProperty(m.exports, k, { set: function(val) { __MODS__[modId].m.exports[k] = val; }, get: function() { return __MODS__[modId].m.exports[k]; } }); }); if(m.exports.__esModule) Object.defineProperty(__MODS__[modId].m.exports, "__esModule", { value: true }); } else { __MODS__[modId].m.exports = m.exports; } } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1578112741543, function(require, module, exports) {
+__DEFINE__(1578202117756, function(require, module, exports) {
 function DOMParser(options){
 	this.options = options ||{locator:{}};
 	
@@ -257,8 +257,8 @@ function appendElement (hander,node) {
 	exports.DOMParser = DOMParser;
 //}
 
-}, function(modId) {var map = {"./sax":1578112741544,"./dom":1578112741545}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1578112741544, function(require, module, exports) {
+}, function(modId) {var map = {"./sax":1578202117757,"./dom":1578202117758}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1578202117757, function(require, module, exports) {
 //[4]   	NameStartChar	   ::=   	":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
 //[4a]   	NameChar	   ::=   	NameStartChar | "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
 //[5]   	Name	   ::=   	NameStartChar (NameChar)*
@@ -894,7 +894,7 @@ exports.XMLReader = XMLReader;
 
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1578112741545, function(require, module, exports) {
+__DEFINE__(1578202117758, function(require, module, exports) {
 /*
  * DOM Level 2
  * Object DOMException
@@ -2141,6 +2141,6 @@ try{
 //}
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1578112741543);
+return __REQUIRE__(1578202117756);
 })()
 //# sourceMappingURL=index.js.map

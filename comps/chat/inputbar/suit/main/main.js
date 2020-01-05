@@ -1,4 +1,3 @@
-import TIM from 'tim-wx-sdk';
 let msgType = require("../../../msgtype");
 let disp = require("../../../../../utils/broadcast");
 var tim = getApp().globalData.tim;
@@ -77,8 +76,8 @@ Component({
 			}
 
             let message = tim.createTextMessage({
-                to: 'user1',
-                conversationType: TIM.TYPES.CONV_C2C,
+                to: me.getSendToParam(),
+                conversationType: msgType.chatType.SINGLE_CHAT,
                 payload: {
                     text: this.data.userMessage
                 }
@@ -97,7 +96,7 @@ Component({
 				"newTextMsg",
 				{
 					msg: message,
-					type: TIM.TYPES.MSG_TEXT,
+					type: msgType.TEXT,
 				},
 				{
 					bubbles: true,

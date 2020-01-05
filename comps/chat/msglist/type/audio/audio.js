@@ -30,9 +30,11 @@ Component({
 		audioPlay(){
 			wx.inter && clearInterval(wx.inter)
 			let audioCtx = this.data.__comps__.audioCtx;
-			var curl = ''
+            audioCtx.src = this.data.msg.msg.url;
+            audioCtx.play();
+			/*var curl = ''
 			wx.downloadFile({
-			url: this.data.msg.msg.data,
+			url: this.data.msg.msg.url,
 			header: {
 				"X-Requested-With": "XMLHttpRequest",
 				Accept: "audio/mp3",
@@ -53,7 +55,7 @@ Component({
 					duration: 1000
 				});
 			}
-		});
+		});*/
 		
 		},
 
@@ -155,10 +157,10 @@ Component({
 			});
 		};
 		this.onWait = () => {
-			wx.showToast({
+			/*wx.showToast({
 					title: "下载中...",
 					duration: 1000
-				});
+				});*/
 		}
 		this.addEvent();
 	},
